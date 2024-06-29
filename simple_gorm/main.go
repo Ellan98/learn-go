@@ -12,15 +12,14 @@ import (
 )
 
 type User struct {
-	ID           uint
+	gorm.Model
 	Name         string
 	Email        *string
 	Age          uint8
 	Birthday     *time.Time
 	MemberNumber sql.NullString // 使用 sql.NullString 处理可空字符串
 	ActivatedAt  sql.NullTime   // 使用 sql.NullTime 处理可空时间字段
-	CreatedAt    time.Time      // 创建时间（由 GORM 自动管理）
-	UpdatedAt    time.Time
+
 }
 
 func main() {
