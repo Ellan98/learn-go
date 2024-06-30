@@ -7,17 +7,77 @@ import (
 )
 
 func main() {
-	router := gin.Default()
-	router.LoadHTMLGlob("templates/**/*")
-	router.GET("/posts/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "posts/index.html", gin.H{
-			"title": "Posts",
-		})
+	r := gin.Default()
+
+	r.GET("/json", func(ctx *gin.Context) {
+		// data := map[string]interface{}{
+		// 	"name": "测试",
+		// 	"age":  18,
+		// }
+
+		data := gin.H{"name": "小王子", "age": 18}
+		ctx.JSON(http.StatusOK, data)
 	})
-	router.GET("/users/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "users/index.html", gin.H{
-			"title": "Users",
-		})
+	// 结构体内的字段 必须首字母大写 才能 导出使用 因此返回的字段是大写的
+	//如果需要小写 可以 给字段 加上tag 即 ``  灵活使用tag 来对数据结构进行定制化操作
+	type msg struct {
+		Name    string `json:"name"`
+		Message string
+		Age     int
+	}
+
+	r.GET("/another_json", func(ctx *gin.Context) {
+		data := msg{
+			Name:    "小王子",
+			Message: "hello golang",
+			Age:     18,
+		}
+
+		ctx.JSON(http.StatusOK, data)
 	})
-	router.Run(":8080")
+
+	// 通过querystring参数
+	r.GET("/web", func(ctx *gin.Context) {
+		//获取参数 第一种方式
+		// name := ctx.Query("query") //通过query 获取请求携带的参数
+		// 第二种方式
+		// name := ctx.DefaultQuery("queryparam", "somebody")
+		// 第三种方式
+		name, ok := ctx.GetQuery("ok")
+		if !ok {
+			name = "somebody"
+		}
+		ctx.JSON(http.StatusOK, gin.H{"name": name})
+
+	})
+
+	// form 表单提交的参数
+
+	r.POST("/login", func(c *gin.Context) {
+		// 第一种 通过 PostForm
+		// userName := c.PostForm("userName")
+		// passWord := c.PostForm("passWord")
+		//第二种 DefaultPostForm
+		// userName := c.DefaultPostForm("userName", "somebody")
+		// passWord := c.DefaultPostForm("xxx", "***") //如果没有填写 则为 空  可以用作初始化字段
+		// 第三种
+		userName, ok := c.GetPostForm("userName")
+
+		if !ok {
+			userName = "default"
+		}
+
+		passWord, ok := c.GetPostForm("passWord")
+
+		if !ok {
+			userName = "default"
+		}
+
+		c.JSON(http.StatusOK, gin.H{"Name": userName, "Word": passWord})
+
+	})
+
+	// path 参数
+
+	r.Run(":8080")
 }
