@@ -1,10 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
+
+// 定义登录结构体
+
+type Login struct {
+	User     string `form:"user" json:"user" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
+}
 
 func main() {
 	r := gin.Default()
@@ -78,6 +86,53 @@ func main() {
 	})
 
 	// path 参数
+	r.GET("/user/search/:username/:address", func(ctx *gin.Context) {
+		username := ctx.Param("username")
+		address := ctx.Param("address")
+
+		ctx.JSON(http.StatusOK, gin.H{"username": username, "address": address})
+	})
+
+	//参数绑定
+	r.POST("/loginJSON", func(ctx *gin.Context) {
+		var login Login
+
+		if err := ctx.ShouldBind(&login); err == nil {
+			fmt.Printf("login info:%#v\n", login)
+
+			ctx.JSON(http.StatusOK, gin.H{
+				"user":     login.User,
+				"password": login.Password,
+			})
+		} else {
+			ctx.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		}
+
+	})
+
+	// 路由组 通常将路由分组用在划分业务逻辑或划分API版本时。
+	userGroup := r.Group("/user")
+	{
+		userGroup.GET("/index", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"group": "user/index"})
+		})
+		userGroup.GET("/login", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"group": "user/login"})
+		})
+
+	}
+	shopGroup := r.Group("/shop")
+	{
+		shopGroup.GET("/index", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"group": "shop/index"})
+		})
+		shopGroup.GET("/cart", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"group": "shop/index"})
+		})
+		shopGroup.POST("/checkout", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"group": "shop/index"})
+		})
+	}
 
 	r.Run(":8080")
 }
