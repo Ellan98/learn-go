@@ -1,9 +1,8 @@
 /*
- * @Author:
- * @Date: 2024-07-20 11:12:36
- * @LastEditors:
- * @LastEditTime: 2024-07-20 11:27:01
- * @Description:
+ * @Date: 2024-08-01 17:15:42
+ * @LastEditTime: 2024-08-01 17:38:37
+ * @FilePath: \cobra\cmd\version.go
+ * @description: 注释
  */
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
@@ -27,13 +26,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//cmd当前指向自身
-		author, err := cmd.Flags().GetString("author")
-		if err != nil {
-			fmt.Println("请输入作者信息")
-		}
-		fmt.Println("作者信息", author)
-		fmt.Printf("当前接收的参数：%v\n", args)
+		fmt.Println("version called")
 	},
 }
 
@@ -49,6 +42,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// versionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	//                         详细命令   简短命令   默认值    注释
-	versionCmd.Flags().StringP("author", "a", "Ellan-copy", "作者name")
 }
