@@ -200,3 +200,17 @@ E:\go\src\learn-go\cobra>go run main.go version --author ellan  test
 
 ```
 
+```go
+func (library *LibraryRoomCmd) eagerParseFlags() error {
+	// library.RootCmd.PersistentFlags()：访问命令的全局标志（persistent flags）。 这些标志是持久标志（persistent flags），它们对命令及其所有子命令都有效
+	// StringVarP：定义一个字符串类型的标志
+	//&library.cfgFile：将标志的值存储在 library 实例的 cfgFile 字段中。
+	// "config"：标志的全名。
+	// "c"：标志的短名（单字符）""：标志的默认值。 "config file path (defaults are 'configs/library.yml')"：标志的描述。
+	library.RootCmd.PersistentFlags().StringVarP(&library.cfgFile, "config", "c", "", "config file path (defaults are 'configs/library_room.yml')")
+	library.RootCmd.PersistentFlags().StringVarP(&library.workDir, "workdir", "w", "", "program working directory (defaults are './')")
+	// 从命令行参数中解析标志。os.Args 是一个包含所有命令行参数的字符串数组，os.Args[0] 通常是程序名称，os.Args[1:] 包含实际的命令行参数。ParseFlags 方法会解析这些参数并将结果存储在相关的标志变量中。
+	return library.RootCmd.ParseFlags(os.Args[1:])
+}
+```
+
